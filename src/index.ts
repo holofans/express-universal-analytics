@@ -2,7 +2,7 @@
  * Created by championswimmer on 05/01/17.
  */
 import { Request, RequestHandler, NextFunction, Response } from 'express'
-import ua = require('universal-analytics')
+import ua from 'universal-analytics'
 
 import './express'
 
@@ -13,6 +13,7 @@ interface ExpressGAParams {
   cookieName?: string
   reqToUserId?: ReqToUserId
   autoTrackPages?: boolean
+  uaOptions?: ua.MiddlewareOptions
 }
 
 function ExpressGA (uaCode: string): Array<RequestHandler>
@@ -25,7 +26,7 @@ function ExpressGA (params: ExpressGAParams | string): Array<RequestHandler> {
     throw new Error('Cannot initialise ExpressGA without uaCode')
   }
 
-  let middlewareOpts = { cookieName: params.cookieName || '_ga' }
+  let middlewareOpts = { cookieName: params.cookieName || '_ga', ... params.uaOptions }
 
   let preUaMiddleware = function (req, res, next) {
     // if _ga cookie is present, remove our internal cid

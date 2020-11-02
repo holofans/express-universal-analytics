@@ -1,6 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const ua = require("universal-analytics");
+const universal_analytics_1 = __importDefault(require("universal-analytics"));
 require("./express");
 function ExpressGA(params) {
     if (typeof params === 'string') {
@@ -9,7 +12,7 @@ function ExpressGA(params) {
     if (!params.uaCode) {
         throw new Error('Cannot initialise ExpressGA without uaCode');
     }
-    let middlewareOpts = { cookieName: params.cookieName || '_ga' };
+    let middlewareOpts = Object.assign({ cookieName: params.cookieName || '_ga' }, params.uaOptions);
     let preUaMiddleware = function (req, res, next) {
         // if _ga cookie is present, remove our internal cid
         if (req.cookies && req.cookies[middlewareOpts.cookieName]) {
@@ -24,7 +27,7 @@ function ExpressGA(params) {
         }
         next();
     };
-    let uaMiddleware = ua.middleware(params.uaCode, middlewareOpts);
+    let uaMiddleware = universal_analytics_1.default.middleware(params.uaCode, middlewareOpts);
     let postUaMiddleware = function (req, res, next) {
         req.visitor.setUid = function (uid) {
             if (req.session)
