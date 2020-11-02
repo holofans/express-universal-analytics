@@ -9,7 +9,7 @@ function ExpressGA(params) {
     if (!params.uaCode) {
         throw new Error('Cannot initialise ExpressGA without uaCode');
     }
-    let middlewareOpts = { cookieName: params.cookieName || '_ga' };
+    let middlewareOpts = { cookieName: params.cookieName || '_ga' , ... ( params.uaConfig || {} )};
     let preUaMiddleware = function (req, res, next) {
         // if _ga cookie is present, remove our internal cid
         if (req.cookies && req.cookies[middlewareOpts.cookieName]) {
